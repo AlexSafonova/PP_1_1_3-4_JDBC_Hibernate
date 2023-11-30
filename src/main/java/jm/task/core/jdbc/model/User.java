@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 
-@Table
+@Table (name = "MYTABLE")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "last_name")
+    @Column(name = "lastName")
     private String lastName;
 
     @Column(name = "age")
