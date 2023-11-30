@@ -21,8 +21,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             String sql = "CREATE TABLE IF NOT EXISTS MYTABLE (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), lastName VARCHAR(255), age TINYINT)";
-            Query query = session.createSQLQuery(sql).addEntity(User.class);
-            query.executeUpdate();
+            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -39,8 +38,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             String sql = "DROP TABLE IF EXISTS MYTABLE";
-            Query query = session.createSQLQuery(sql).addEntity(User.class);
-            query.executeUpdate();
+            session.createSQLQuery(sql).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
