@@ -38,24 +38,33 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        String sql = "INSERT INTO Users (name, lastName, age) VALUES (?, ?, ?)";
-
-        session.createSQLQuery(sql);
-
+        String sql = "INSERT INTO Users (name, lastName, age) VALUES (:name, :lastName, :age)";
+        Query query = session.createSQLQuery(sql).addEntity(User.class);
+        query.executeUpdate();
+        session.close();
     }
 
     @Override
     public void removeUserById(long id) {
+        String sql = "DELETE FROM Users WHERE id = :id";
+        Query query = session.createSQLQuery(sql).addEntity(User.class);
+        query.executeUpdate();
+        session.close();
 
     }
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        List<User> users = session.createQuery("FROM User").list();
+        session.close();
+        return users;
     }
 
     @Override
     public void cleanUsersTable() {
-
+        String sql = "DELETE FROM Users";
+        Query query = session.createSQLQuery(sql).addEntity(User.class);
+        query.executeUpdate();
+        session.close();
     }
 }
