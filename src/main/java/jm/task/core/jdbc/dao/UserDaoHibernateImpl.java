@@ -6,11 +6,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
     private static final SessionFactory sessionFactory = Util.getSessionFactory();
+
     public UserDaoHibernateImpl() {
 
     }
@@ -27,7 +28,7 @@ public class UserDaoHibernateImpl implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            
+
         }
 
     }
@@ -60,7 +61,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
             }
         }
-        
+
     }
 
     @Override
@@ -75,29 +76,23 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.commit();
             }
 
-            } catch (Exception e) {
-                if (transaction != null) {
-                    transaction.rollback();
-                }
-            }
-        
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        List<User> users = null;
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            users = session.createQuery("FROM User").list();
-            transaction.commit();
-            return users;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
         }
-        return users;
+
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        try (Session session = sessionFactory.openSession()) {
+            TypedQuery<User> query = session.createQuery("FROM User", User.class);
+            return query.getResultList();
+        } catch (Exception ignored) {
+
+        }
+        return null;
     }
 
     @Override
@@ -105,8 +100,7 @@ public class UserDaoHibernateImpl implements UserDao {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            String sql = "TRUNCATE TABLE MYTABLE";
-            session.createSQLQuery(sql).executeUpdate();
+            session.createSQLQuery("DELETE FROM MYTABLE").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
